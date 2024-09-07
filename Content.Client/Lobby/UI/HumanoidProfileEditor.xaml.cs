@@ -9,6 +9,7 @@ using Content.Client.Players.PlayTimeTracking;
 using Content.Client.Sprite;
 using Content.Client.Stylesheets;
 using Content.Client.UserInterface.Systems.Guidebook;
+using Content.Shared.BF.CCVars;
 using Content.Shared.CCVar;
 using Content.Shared.Clothing;
 using Content.Shared.GameTicking;
@@ -209,6 +210,18 @@ namespace Content.Client.Lobby.UI
             };
 
             #endregion Gender
+
+            // BF-TTS-Start
+            #region Voice
+
+            if (configurationManager.GetCVar(BfCCVars.TtsEnabled))
+            {
+                TTSContainer.Visible = true;
+                InitializeVoice();
+            }
+
+            #endregion
+            // BF-TTS-End
 
             RefreshSpecies();
 
@@ -756,6 +769,7 @@ namespace Content.Client.Lobby.UI
             UpdateHairPickers();
             UpdateCMarkingsHair();
             UpdateCMarkingsFacialHair();
+            UpdateTTSVoicesControls(); // BF-TTS
 
             RefreshAntags();
             RefreshJobs();
@@ -1178,6 +1192,7 @@ namespace Content.Client.Lobby.UI
             }
 
             UpdateGenderControls();
+            UpdateTTSVoicesControls(); // BF-TTS
             Markings.SetSex(newSex);
             ReloadPreview();
         }
@@ -1187,6 +1202,14 @@ namespace Content.Client.Lobby.UI
             Profile = Profile?.WithGender(newGender);
             ReloadPreview();
         }
+
+        // BF-TTS-Start
+        private void SetVoice(string newVoice)
+        {
+            Profile = Profile?.WithVoice(newVoice);
+            IsDirty = true;
+        }
+        // BF-TTS-End
 
         private void SetSpecies(string newSpecies)
         {
