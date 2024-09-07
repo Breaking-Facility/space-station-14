@@ -3,5 +3,6 @@
 # Sorting by path instead of by who added it one day :(
 # this isn't how codeowners rules work pls read the first comment instead of trying to force a sorting order
 
-We are "fork" under Space Wizards build.
-For all PRs ping @Sh18RW.
+#We are "fork" under Space Wizards build.
+# For all PRs ping
+* @Sh18RW.
