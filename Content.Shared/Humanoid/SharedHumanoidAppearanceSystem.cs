@@ -44,9 +44,9 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
     public const string DefaultVoice = "Garithos";
     public static readonly Dictionary<Sex, string> DefaultSexVoice = new()
     {
-        {Sex.Male, "Garithos"},
-        {Sex.Female, "Maiev"},
-        {Sex.Unsexed, "Myron"},
+        {Sex.Male, "Oleg"},
+        {Sex.Female, "Asha"},
+        {Sex.Unsexed, "Zahar"},
     };
     // BF-TTS-End
 
