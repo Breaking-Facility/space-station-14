@@ -1,1 +1,8 @@
-Entries: []
+﻿Entries:
+- author: Sh18RW
+  changes:
+  - message: Fix changelogs.
+    type: Fix
+  id: 1
+  time: '2024-09-07T19:47:47.0000000+00:00'
+  url: https://github.com/Breaking-Facility/space-station-14/pull/7
