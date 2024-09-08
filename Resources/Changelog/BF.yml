@@ -22,3 +22,13 @@
   id: 2
   time: '2024-09-08T15:26:56.0000000+00:00'
   url: https://github.com/Breaking-Facility/space-station-14/pull/12
+- author: Sh18RW
+  changes:
+  - message: "\u041F\u043E\u0444\u0438\u043A\u0448\u0435\u043D\u044B \u0430\u0432\u0442\
+      \u043E\u043C\u0430\u0442\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0437\u0430\
+      \u043F\u0438\u0441\u0438 \u0438\u0437\u043C\u0435\u043D\u0435\u043D\u0438\u0439\
+      ."
+    type: Fix
+  id: 3
+  time: '2024-09-08T15:32:11.0000000+00:00'
+  url: https://github.com/Breaking-Facility/space-station-14/pull/13
