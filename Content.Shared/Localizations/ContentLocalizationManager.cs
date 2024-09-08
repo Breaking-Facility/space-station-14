@@ -10,8 +10,8 @@ namespace Content.Shared.Localizations
         [Dependency] private readonly ILocalizationManager _loc = default!;
 
         // If you want to change your codebase's language, do it here.
-        private const string Culture = "ru-RU"; // BF-Localization
-        private const string FallbackCulture = "en-US"; // BF-Localization
+        private const string Culture = "ru-RU"; // Corvax-Localization
+        private const string FallbackCulture = "en-US"; // Corvax-Localization
 
         /// <summary>
         /// Custom format strings used for parsing and displaying minutes:seconds timespans.
@@ -27,7 +27,7 @@ namespace Content.Shared.Localizations
         public void Initialize()
         {
             var culture = new CultureInfo(Culture);
-            var fallbackCulture = new CultureInfo(FallbackCulture); // BF-Localization
+            var fallbackCulture = new CultureInfo(FallbackCulture); // Corvax-Localization
 
             _loc.LoadCulture(culture);
             _loc.LoadCulture(fallbackCulture);
