@@ -25,7 +25,6 @@ public sealed class VoiceMaskBoundUserInterface : BoundUserInterface
 
         _window.OnNameChange += OnNameSelected;
         _window.OnVerbChange += verb => SendMessage(new VoiceMaskChangeVerbMessage(verb));
-        _window.OnVoiceChange += voice => SendMessage(new VoiceMaskChangeVoiceMessage(voice)); // BF-TTS
     }
 
     private void OnNameSelected(string name)
@@ -40,7 +39,7 @@ public sealed class VoiceMaskBoundUserInterface : BoundUserInterface
             return;
         }
 
-        _window.UpdateState(cast.Name, cast.Voice, cast.Verb); // BF-TTS
+        _window.UpdateState(cast.Name, cast.Verb);
     }
 
     protected override void Dispose(bool disposing)
