@@ -16,13 +16,13 @@ public abstract class SharedChatSystem : EntitySystem
     public const char LocalPrefix = '>';
     public const char ConsolePrefix = '/';
     public const char DeadPrefix = '\\';
-    public const char LOOCPrefix = '(';
+    public const char LOOCPrefix = '_';
     public const char OOCPrefix = '[';
-    public const char EmotesPrefix = '@';
+    public const char EmotesPrefix = '%';
     public const char EmotesAltPrefix = '*';
     public const char AdminPrefix = ']';
     public const char WhisperPrefix = ',';
-    public const char DefaultChannelKey = 'р'; // BF-Localization
+    public const char DefaultChannelKey = 'р';
     // BF-TTS-Start: Moved from Server to Shared
     public const int VoiceRange = 10; // how far voice goes in world units
     public const int WhisperClearRange = 2; // how far whisper goes while still being understandable, in world units
