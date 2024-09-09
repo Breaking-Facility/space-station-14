@@ -61,8 +61,9 @@ public sealed class TTSManager
     /// </summary>
     /// <param name="speaker">Identifier of speaker</param>
     /// <param name="text">SSML formatted text</param>
+    /// <param name="ttsEffects">TTS additional effects as robot voice and etc.</param>
     /// <returns>OGG audio bytes or null if failed</returns>
-    public async Task<byte[]?> ConvertTextToSpeech(string speaker, string text)
+    public async Task<byte[]?> ConvertTextToSpeech(string speaker, string text, TtsEffects ttsEffects)
     {
         WantedCount.Inc();
         var cacheKey = GenerateCacheKey(speaker, text);
@@ -80,6 +81,7 @@ public sealed class TTSManager
             ApiToken = _apiToken,
             Text = text,
             Speaker = speaker,
+            TtsEffects = (ushort) ttsEffects,
         };
 
         var reqTime = DateTime.UtcNow;
@@ -178,6 +180,9 @@ public sealed class TTSManager
 
         [JsonPropertyName("format")]
         public string Format { get; private set; } = "ogg";
+
+        [JsonPropertyName("effects")]
+        public ushort TtsEffects { get; set; } = 0x0;
     }
 
     private struct GenerateVoiceResponse

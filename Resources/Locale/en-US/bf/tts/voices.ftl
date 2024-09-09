@@ -1,3 +1,4 @@
+tts-voice-name-aidar = Aidar
 tts-voice-name-oleg = Oleg
 tts-voice-name-arisha = Arisha
 tts-voice-name-alice = Alice

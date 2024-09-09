@@ -102,16 +102,19 @@ public sealed partial class TTSSystem : EntitySystem
     private async void HandleSay(EntityUid uid, string message, string speaker)
     {
         var soundData = await GenerateTTS(message, speaker);
-        if (soundData is null) return;
+        if (soundData is null)
+        {
+            return;
+        }
         RaiseNetworkEvent(new PlayTTSEvent(soundData, GetNetEntity(uid)), Filter.Pvs(uid));
     }
 
     private async void HandleWhisper(EntityUid uid, string message, string obfMessage, string speaker)
     {
-        var fullSoundData = await GenerateTTS(message, speaker, true);
+        var fullSoundData = await GenerateTTS(message, speaker, TtsEffects.Whisper);
         if (fullSoundData is null) return;
 
-        var obfSoundData = await GenerateTTS(obfMessage, speaker, true);
+        var obfSoundData = await GenerateTTS(obfMessage, speaker, TtsEffects.Whisper);
         if (obfSoundData is null) return;
 
         var fullTtsEvent = new PlayTTSEvent(fullSoundData, GetNetEntity(uid), true);
@@ -123,7 +126,10 @@ public sealed partial class TTSSystem : EntitySystem
         var receptions = Filter.Pvs(uid).Recipients;
         foreach (var session in receptions)
         {
-            if (!session.AttachedEntity.HasValue) continue;
+            if (!session.AttachedEntity.HasValue)
+            {
+                continue;
+            }
             var xform = xformQuery.GetComponent(session.AttachedEntity.Value);
             var distance = (sourcePos - _xforms.GetWorldPosition(xform, xformQuery)).Length();
             if (distance > ChatSystem.VoiceRange * ChatSystem.VoiceRange)
@@ -134,19 +140,22 @@ public sealed partial class TTSSystem : EntitySystem
     }
 
     // ReSharper disable once InconsistentNaming
-    private async Task<byte[]?> GenerateTTS(string text, string speaker, bool isWhisper = false)
+    public async Task<byte[]?> GenerateTTS(string text, string speaker, TtsEffects effects = TtsEffects.None)
     {
         var textSanitized = Sanitize(text);
-        if (textSanitized == "") return null;
+        if (textSanitized == "")
+        {
+            return null;
+        }
         if (char.IsLetter(textSanitized[^1]))
             textSanitized += ".";
 
         var ssmlTraits = SoundTraits.RateFast;
-        if (isWhisper)
+        if (effects.HasFlag(TtsEffects.Whisper))
             ssmlTraits = SoundTraits.PitchVerylow;
         var textSsml = ToSsmlText(textSanitized, ssmlTraits);
 
-        return await _ttsManager.ConvertTextToSpeech(speaker, textSsml);
+        return await _ttsManager.ConvertTextToSpeech(speaker, textSsml, effects);
     }
 }
 
@@ -160,4 +169,14 @@ public sealed class TransformSpeakerVoiceEvent : EntityEventArgs
         Sender = sender;
         VoiceId = voiceId;
     }
+}
+
+[Flags]
+public enum TtsEffects : ushort
+{
+    None,
+    Robot = 1,
+    Whisper = 0x1 << 1,
+    Announce = 0x1 << 2,
+    Radio = 0x1 << 3,
 }

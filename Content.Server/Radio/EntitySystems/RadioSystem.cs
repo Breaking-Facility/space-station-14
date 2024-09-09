@@ -1,8 +1,11 @@
 using Content.Server.Administration.Logs;
+using Content.Server.BF.TTS;
+using Content.Server.BF.TTS.Systems;
 using Content.Server.Chat.Systems;
 using Content.Server.Power.Components;
 using Content.Server.Radio.Components;
 using Content.Server.VoiceMask;
+using Content.Shared.BF.TTS;
 using Content.Shared.Chat;
 using Content.Shared.Database;
 using Content.Shared.Radio;
@@ -116,6 +119,14 @@ public sealed class RadioSystem : EntitySystem
             NetEntity.Invalid,
             null);
         var chatMsg = new MsgChatMessage { Message = chat };
+        // BF-TTS-Start
+        var voice = "Aidar";
+        if (TryComp<TTSComponent>(messageSource, out var ttsComponent) && !string.IsNullOrEmpty(ttsComponent.VoicePrototypeId))
+        {
+            voice = ttsComponent.VoicePrototypeId;
+        }
+        var ttsEv = new TTSHeadsetSystem.RadioPlayTts(voice, message, TtsEffects.None, messageSource);
+        // BF-TTS-End
         var ev = new RadioReceiveEvent(message, messageSource, channel, radioSource, chatMsg);
 
         var sendAttemptEv = new RadioSendAttemptEvent(channel, radioSource);
@@ -154,6 +165,7 @@ public sealed class RadioSystem : EntitySystem
 
             // send the message
             RaiseLocalEvent(receiver, ref ev);
+            RaiseLocalEvent(receiver, ttsEv);
         }
 
         if (name != Name(messageSource))

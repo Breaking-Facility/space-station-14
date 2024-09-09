@@ -1,4 +1,10 @@
 - type: ttsVoice
+  id: Aidar
+  name: tts-voice-name-aidar
+  sex: Male
+  speaker: aidar
+
+- type: ttsVoice
   id: Oleg
   name: tts-voice-name-oleg
   sex: Male
