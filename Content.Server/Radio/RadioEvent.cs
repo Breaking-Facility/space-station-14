@@ -1,7 +1,6 @@
 using Content.Shared.BF.TTS;
 using Content.Shared.Chat;
 using Content.Shared.Radio;
-using Robust.Shared.Prototypes;
 
 namespace Content.Server.Radio;
 
