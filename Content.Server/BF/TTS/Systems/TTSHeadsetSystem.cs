@@ -1,9 +1,6 @@
-using System.Threading.Tasks;
-using Content.Server.Radio;
 using Content.Server.Radio.Components;
 using Content.Shared.BF.TTS;
-using Content.Shared.Radio.Components;
-using Robust.Shared.Network;
+using Content.Shared.Chat;
 using Robust.Shared.Player;
 
 namespace Content.Server.BF.TTS.Systems;
@@ -11,33 +8,59 @@ namespace Content.Server.BF.TTS.Systems;
 /// <summary>
 /// Uses for radio tts.
 /// </summary>
-public sealed class TTSHeadsetSystem : EntitySystem
+public sealed class TtsHeadsetSystem : EntitySystem
 {
-    /// <inheritdoc/>
+    /// <inheritdoc cref="Robust.Shared.GameObjects.EntitySystem" />
     [Dependency] private readonly TTSSystem _ttsSystem = default!;
 
     public override void Initialize()
     {
-        SubscribeLocalEvent<HeadsetComponent, RadioPlayTts>(OnRadioReceive);
+        SubscribeLocalEvent<PlayRadioTtsEvent>(OnPlayRadioTts);
     }
 
-    private async void OnRadioReceive(EntityUid uid, HeadsetComponent comp, RadioPlayTts args)
+    private async void OnPlayRadioTts(PlayRadioTtsEvent ev)
     {
-        if (!TryComp(Transform(uid).ParentUid, out ActorComponent? actor))
-        {
-            return;
-        }
-
-        var effects = args.TtsEffects | TtsEffects.Whisper | TtsEffects.Radio;
-        var audioData = await _ttsSystem.GenerateTTS(args.Message, args.Voice, effects);
+        var effects = ev.Effects | TtsEffects.Radio;
+        var audioData = await _ttsSystem.GenerateTTS(ev.Message, ev.Voice, effects);
 
         if (audioData == null)
         {
             return;
         }
 
-        var ev = new PlayTTSEvent(audioData, GetNetEntity(args.Source), effects.HasFlag(TtsEffects.Whisper));
-        RaiseNetworkEvent(ev, actor.PlayerSession.Channel);
+        foreach (var receiver in ev.Receivers)
+        {
+            PlayTTSEvent playTtsEvent;
+            if (TryComp<RadioSpeakerComponent>(receiver, out var speaker))
+            {
+                if (!speaker.Enabled)
+                {
+                    continue;
+                }
+
+                playTtsEvent = new PlayTTSEvent(audioData,
+                    GetNetEntity(receiver),
+                    true);
+                RaiseNetworkEvent(playTtsEvent, Filter.Pvs(receiver, 2));
+
+                continue;
+            }
+
+            if (!TryComp(Transform(receiver).ParentUid, out ActorComponent? actor))
+            {
+                continue;
+            }
+
+            playTtsEvent = new PlayTTSEvent(audioData,
+                null,
+                effects.HasFlag(TtsEffects.Whisper));
+            RaiseNetworkEvent(playTtsEvent, actor.PlayerSession.Channel);
+        }
     }
-    public record RadioPlayTts(string Voice, string Message, TtsEffects TtsEffects, EntityUid Source);
+
+    public record PlayRadioTtsEvent(
+        string Voice,
+        string Message,
+        TtsEffects Effects,
+        List<EntityUid> Receivers);
 }

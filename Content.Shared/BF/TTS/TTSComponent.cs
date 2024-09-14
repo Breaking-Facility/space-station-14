@@ -16,4 +16,18 @@ public sealed partial class TTSComponent : Component
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("voice", customTypeSerializer: typeof(PrototypeIdSerializer<TTSVoicePrototype>))]
     public string? VoicePrototypeId { get; set; }
+
+    [ViewVariables(VVAccess.ReadWrite)]
+    [DataField("effects")]
+    public TtsEffects Effects = TtsEffects.None;
+}
+
+[Flags]
+public enum TtsEffects : ushort
+{
+    None,
+    Robot = 1,
+    Whisper = 0x1 << 1,
+    Announce = 0x1 << 2,
+    Radio = 0x1 << 3,
 }

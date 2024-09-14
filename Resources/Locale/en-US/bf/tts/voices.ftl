@@ -45,3 +45,4 @@ tts-voice-name-vincen = Vincen
 tts-voice-name-silly = Silly
 tts-voice-name-winny = Winny
 tts-voice-name-krinol = Krinol
+tts-voice-name-robot = Robot Voice (you shouldn't see this voice)
