@@ -75,7 +75,7 @@ public sealed class RadioSystem : EntitySystem
     /// </summary>
     /// <param name="messageSource">Entity that spoke the message</param>
     /// <param name="radioSource">Entity that picked up the message and will send it, e.g. headset</param>
-    public void SendRadioMessage(EntityUid messageSource, string message, RadioChannelPrototype channel, EntityUid radioSource, bool escapeMarkup = true)
+    public async void SendRadioMessage(EntityUid messageSource, string message, RadioChannelPrototype channel, EntityUid radioSource, bool escapeMarkup = true)
     {
         // TODO if radios ever garble / modify messages, feedback-prevention needs to be handled better than this.
         if (!_messages.Add(message))
@@ -88,8 +88,7 @@ public sealed class RadioSystem : EntitySystem
         name = FormattedMessage.EscapeText(name);
 
         SpeechVerbPrototype speech;
-        if (mask != null
-            && mask.Enabled
+        if (mask is { Enabled: true }
             && mask.SpeechVerb != null
             && _prototype.TryIndex<SpeechVerbPrototype>(mask.SpeechVerb, out var proto))
         {
@@ -125,7 +124,7 @@ public sealed class RadioSystem : EntitySystem
         {
             voice = ttsComponent.VoicePrototypeId;
         }
-        var ttsEv = new TTSHeadsetSystem.RadioPlayTts(voice, message, TtsEffects.None, messageSource);
+        var receivers = new List<EntityUid>();
         // BF-TTS-End
         var ev = new RadioReceiveEvent(message, messageSource, channel, radioSource, chatMsg);
 
@@ -165,8 +164,10 @@ public sealed class RadioSystem : EntitySystem
 
             // send the message
             RaiseLocalEvent(receiver, ref ev);
-            RaiseLocalEvent(receiver, ttsEv);
+            receivers.Add(receiver);// BF-Tts
         }
+
+        RaiseLocalEvent(new TtsHeadsetSystem.PlayRadioTtsEvent(voice, message, TtsEffects.None, receivers));// BF-TTs
 
         if (name != Name(messageSource))
             _adminLogger.Add(LogType.Chat, LogImpact.Low, $"Radio message from {ToPrettyString(messageSource):user} as {name} on {channel.LocalizedName}: {message}");
