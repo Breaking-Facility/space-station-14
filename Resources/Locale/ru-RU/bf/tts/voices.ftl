@@ -45,3 +45,4 @@ tts-voice-name-vincen = Винсен
 tts-voice-name-silly = Силли
 tts-voice-name-winny = Вини
 tts-voice-name-krinol = Кринол
+tts-voice-name-robot = Робот (вы не должны видеть этот голос)
