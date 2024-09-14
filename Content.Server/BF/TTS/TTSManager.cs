@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Content.Shared.BF.CCVars;
+using Content.Shared.BF.TTS;
 using Prometheus;
 using Robust.Shared.Configuration;
 

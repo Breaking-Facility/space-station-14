@@ -78,6 +78,8 @@ public sealed partial class TTSSystem : EntitySystem
     private async void OnEntitySpoke(EntityUid uid, TTSComponent component, EntitySpokeEvent args)
     {
         var voiceId = component.VoicePrototypeId;
+        var ttsEffects = component.Effects;
+
         if (!_isEnabled ||
             args.Message.Length > MaxMessageChars ||
             voiceId == null)
@@ -92,16 +94,16 @@ public sealed partial class TTSSystem : EntitySystem
 
         if (args.ObfuscatedMessage != null)
         {
-            HandleWhisper(uid, args.Message, args.ObfuscatedMessage, protoVoice.Speaker);
+            HandleWhisper(uid, args.Message, args.ObfuscatedMessage, protoVoice.Speaker, ttsEffects);
             return;
         }
 
-        HandleSay(uid, args.Message, protoVoice.Speaker);
+        HandleSay(uid, args.Message, protoVoice.Speaker, ttsEffects);
     }
 
-    private async void HandleSay(EntityUid uid, string message, string speaker)
+    private async void HandleSay(EntityUid uid, string message, string speaker, TtsEffects ttsEffects)
     {
-        var soundData = await GenerateTTS(message, speaker);
+        var soundData = await GenerateTTS(message, speaker, ttsEffects);
         if (soundData is null)
         {
             return;
@@ -109,12 +111,12 @@ public sealed partial class TTSSystem : EntitySystem
         RaiseNetworkEvent(new PlayTTSEvent(soundData, GetNetEntity(uid)), Filter.Pvs(uid));
     }
 
-    private async void HandleWhisper(EntityUid uid, string message, string obfMessage, string speaker)
+    private async void HandleWhisper(EntityUid uid, string message, string obfMessage, string speaker, TtsEffects ttsEffects)
     {
-        var fullSoundData = await GenerateTTS(message, speaker, TtsEffects.Whisper);
+        var fullSoundData = await GenerateTTS(message, speaker, ttsEffects | TtsEffects.Whisper);
         if (fullSoundData is null) return;
 
-        var obfSoundData = await GenerateTTS(obfMessage, speaker, TtsEffects.Whisper);
+        var obfSoundData = await GenerateTTS(obfMessage, speaker, ttsEffects | TtsEffects.Whisper);
         if (obfSoundData is null) return;
 
         var fullTtsEvent = new PlayTTSEvent(fullSoundData, GetNetEntity(uid), true);
@@ -169,14 +171,4 @@ public sealed class TransformSpeakerVoiceEvent : EntityEventArgs
         Sender = sender;
         VoiceId = voiceId;
     }
-}
-
-[Flags]
-public enum TtsEffects : ushort
-{
-    None,
-    Robot = 1,
-    Whisper = 0x1 << 1,
-    Announce = 0x1 << 2,
-    Radio = 0x1 << 3,
 }

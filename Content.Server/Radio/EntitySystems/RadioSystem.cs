@@ -120,9 +120,11 @@ public sealed class RadioSystem : EntitySystem
         var chatMsg = new MsgChatMessage { Message = chat };
         // BF-TTS-Start
         var voice = "Aidar";
+        var effects = TtsEffects.None;
         if (TryComp<TTSComponent>(messageSource, out var ttsComponent) && !string.IsNullOrEmpty(ttsComponent.VoicePrototypeId))
         {
             voice = ttsComponent.VoicePrototypeId;
+            effects = ttsComponent.Effects;
         }
         var receivers = new List<EntityUid>();
         // BF-TTS-End
@@ -167,7 +169,7 @@ public sealed class RadioSystem : EntitySystem
             receivers.Add(receiver);// BF-Tts
         }
 
-        RaiseLocalEvent(new TtsHeadsetSystem.PlayRadioTtsEvent(voice, message, TtsEffects.None, receivers));// BF-TTs
+        RaiseLocalEvent(new TtsHeadsetSystem.PlayRadioTtsEvent(voice, message, effects, receivers));// BF-TTs
 
         if (name != Name(messageSource))
             _adminLogger.Add(LogType.Chat, LogImpact.Low, $"Radio message from {ToPrettyString(messageSource):user} as {name} on {channel.LocalizedName}: {message}");

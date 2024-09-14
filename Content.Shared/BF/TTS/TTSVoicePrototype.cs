@@ -28,7 +28,4 @@ public sealed class TTSVoicePrototype : IPrototype
     /// </summary>
     [DataField("roundStart")]
     public bool RoundStart { get; } = true;
-
-    [DataField("sponsorOnly")]
-    public bool SponsorOnly { get; } = false;
 }

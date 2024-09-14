@@ -72,6 +72,10 @@
   - type: Anchorable
   - type: TypingIndicator
     proto: robot
+  - type: TTS # BF-TTS
+    voice: Robot
+    effects:
+      Robot
   - type: Speech
     speechVerb: Robotic
     speechSounds: Vending

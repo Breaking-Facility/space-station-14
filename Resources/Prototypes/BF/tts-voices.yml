@@ -3,6 +3,7 @@
   name: tts-voice-name-aidar
   sex: Male
   speaker: aidar
+  roundStart: false
 
 - type: ttsVoice
   id: Oleg
@@ -279,3 +280,10 @@
   name: tts-voice-name-krinol
   sex: Male
   speaker: krinol
+
+- type: ttsVoice
+  id: Robot
+  name: tts-voice-name-robot
+  sex: Unsexed
+  roundStart: false
+  speaker: gladas
